@@ -1,0 +1,84 @@
+body {
+    background-color: black;
+    font-size: 20px;
+    color: white;
+    font-family: monospace;
+    overflow: auto;
+}
+
+#terminal {
+  height: calc(100vh - 30px);
+  padding: 10px;
+  white-space: pre-wrap;
+
+}
+
+body::-webkit-scrollbar {
+  width: 12px; 
+}
+
+body::-webkit-scrollbar-track {
+  background: #1b1b1b;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 8px;
+  border: 2px solid #1b1b1b; 
+  transition: background-color 0.3s ease; 
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #696969; 
+}
+
+
+input {
+    width: 100%;
+    border: none;
+    background: #333;
+    color: white;
+    font-family: monospace;
+    outline: none;
+    font-size: 16px;
+}
+
+#terminal {
+    overflow-y: hidden;
+
+    padding-right: 10px;
+    white-space: pre-wrap;
+  }
+  
+
+  .red {
+    color: red;
+  }
+  
+  .green {
+    color: green;
+  }
+  
+  .yellow {
+    color: yellow;
+  }
+  
+  .blue {
+    color: blue;
+  }
+  
+  .reset {
+    color: inherit;
+  }
+  strong {
+    font-weight: bold;
+  }
+  
+  .underline {
+    text-decoration: underline;
+  }
+  
+  .italic {
+    font-style: italic;
+  }
+  

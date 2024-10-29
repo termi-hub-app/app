@@ -1,0 +1,40 @@
+{
+  "name": "termihub",
+  "version": "1.0.0-b1",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac "
+  },
+  "build": {
+    "appId": "com.liveweeeb.termihub",
+    "productName": "TermiHub",
+    "files": [
+      "node_modules/**/*",
+      "src/**/*",
+      "command/**/*",
+      "index.html",
+      "logo.png",
+      "logo.svg",
+      "main.js",
+      "package-lock.json",
+      "package.json",
+      "renderer.js",
+      "styles.css"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "logo.png",
+      "category": "public.app-category.utilities"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8"
+  }
+}
