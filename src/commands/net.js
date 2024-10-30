@@ -4,16 +4,16 @@ const traceroute = require('traceroute')
 
 export function netPing(terminal, args) {
     if (args.length === 0) {
-        terminal.innerHTML += formatTextWithStyles(`<br><red>Erreur :</red> Aucun hôte spécifié pour 'net-ping'.`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun hôte spécifié pour 'net-ping'.`);
         return;
     }
 
     ping.promise.probe(args[0])
         .then(res => {
             if (res.alive) {
-                terminal.innerHTML += formatTextWithStyles(`<br>Ping réussi vers ${args[0]} : ${res.time} ms`);
+                terminal.innerHTML += formatTextWithStyles(`<br><br>Ping réussi vers ${args[0]} : ${res.time} ms`);
             } else {
-                terminal.innerHTML += formatTextWithStyles(`<br><red>Ping échoué :</red> ${args[0]} est injoignable.`);
+                terminal.innerHTML += formatTextWithStyles(`<br<br><red>Ping échoué :</red> ${args[0]} est injoignable.`);
             }
         })
         .catch(err => {

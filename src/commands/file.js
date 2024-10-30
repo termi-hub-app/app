@@ -120,18 +120,18 @@ export function aptInstall(terminal, args) {
     });
 
     installProcess.stdout.on('data', (data) => {
-        terminal.innerHTML += formatTextWithStyles(`<br>${data}`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><green>Data : </green><red>${data}</red>`);
     });
 
     installProcess.stderr.on('data', (data) => {
-        terminal.innerHTML += formatTextWithStyles(`<br><red>Erreur :</red> ${data}`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> ${data}`);
     });
 
     installProcess.on('close', (code) => {
         if (code === 0) {
-            terminal.innerHTML += formatTextWithStyles(`<br><green>Installation terminée avec succès.</green>`);
+            terminal.innerHTML += formatTextWithStyles(`<br><br><green>Installation terminée avec succès.</green>`);
         } else {
-            terminal.innerHTML += formatTextWithStyles(`<br><red>Installation échouée avec le code : ${code}</red>`);
+            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Installation échouée avec le code : ${code}</red>`);
         }
     });
 }

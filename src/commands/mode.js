@@ -24,12 +24,12 @@ function applyTheme(themeName) {
 }
 
 export function modeView(terminal) {
-    terminal.innerHTML += formatTextWithStyles(`<br>Mode actuel : <green>${currentMode}</green>`);
+    terminal.innerHTML += formatTextWithStyles(`<br><br>Mode actuel : <green>${currentMode}</green>`);
 }
 
 export function modeSet(terminal, args) {
     if (args.length === 0) {
-        terminal.innerHTML += formatTextWithStyles(`<br><red>Erreur :</red> Aucun mode spécifié pour 'mode-set'.`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun mode spécifié pour 'mode-set'.`);
         return;
     }
 
@@ -37,17 +37,17 @@ export function modeSet(terminal, args) {
     if (themes[newMode]) {
         currentMode = newMode;
         applyTheme(currentMode);
-        terminal.innerHTML += formatTextWithStyles(`<br>Mode changé en : <green>${currentMode}</green>`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br>Mode changé en : <green>${currentMode}</green>`);
     } else {
-        terminal.innerHTML += formatTextWithStyles(`<br><red>Erreur :</red> Mode non trouvé : ${newMode}`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Mode non trouvé : ${newMode}`);
     }
 }
 
 
 export function modeList(terminal) {
     const themeNames = Object.keys(themes);
-    terminal.innerHTML += formatTextWithStyles(`<br>Thèmes disponibles :`);
+    terminal.innerHTML += formatTextWithStyles(`<br><br>Thèmes disponibles :`);
     themeNames.forEach(theme => {
-        terminal.innerHTML += formatTextWithStyles(`<br>- <green>${theme}</green>`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br>- <green>${theme}</green>`);
     });
 }

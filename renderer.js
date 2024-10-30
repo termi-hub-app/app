@@ -9,7 +9,7 @@ function scrollToBottom() {
 }
 
 function showWelcomeMessage() {
-    terminal.innerHTML += formatTextWithStyles('<br><strong>Bienvenue sur <underline>TermHub <italic>1.0.0-b2</italic></underline></strong></underline> !<br>Tapez ? pour avoir de l\'aide<br>'); // Sauts de ligne avant le message
+    terminal.innerHTML += formatTextWithStyles('<br><strong>Bienvenue sur <underline>TermHub <italic>1.0.0-b2</italic></underline></strong></underline> !<br>Tapez ? pour avoir de l\'aide');
     scrollToBottom(); 
 }
 

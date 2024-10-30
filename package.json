@@ -4,7 +4,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build:windows": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder"
   },
   "build": {
     "appId": "com.liveweeeb.termihub",
@@ -25,12 +27,10 @@
     "directories": {
       "output": "dist"
     },
-    "linux": {
+    "win": {
       "target": [
-        "AppImage",
-        "tar.gz"
+        "nsis"
       ],
-      "category": "Utility",
       "icon": "logo.png"
     }
   },

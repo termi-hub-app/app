@@ -12,8 +12,8 @@ export function osCommand(terminal) {
   const uptimeHours = Math.floor(uptime / 3600);
   const uptimeMinutes = Math.floor((uptime % 3600) / 60);
 
-  terminal.insertAdjacentHTML('beforeend', formatTextWithStyles(`
-<br>
+  terminal.innerHTML += formatTextWithStyles(`
+<br><br>
 <strong>Système d'exploitation : </strong>${platform}<br>
 <strong>Version : </strong>${release}<br>
 <strong>Nom d'utilisateur : </strong>${userInfo.username}<br>
@@ -21,7 +21,7 @@ export function osCommand(terminal) {
 <strong>Mémoire totale : </strong>${(totalMemory / (1024 ** 2)).toFixed(2)} Mo<br>
 <strong>Mémoire libre : </strong>${(freeMemory / (1024 ** 2)).toFixed(2)} Mo<br>
 <strong>Processeur : </strong>${cpuInfo}
-  `));
+  `);
   
   scrollToBottom();
 }
