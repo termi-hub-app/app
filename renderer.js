@@ -9,7 +9,7 @@ function scrollToBottom() {
 }
 
 function showWelcomeMessage() {
-    terminal.innerHTML += formatTextWithStyles('<br><strong>Bienvenue sur <underline>TermHub <italic>1.0.0-b1</italic></underline></strong></underline> !<br>Tapez ? pour avoir de l\'aide'); // Sauts de ligne avant le message
+    terminal.innerHTML += formatTextWithStyles('<br><strong>Bienvenue sur <underline>TermHub <italic>1.0.0-b2</italic></underline></strong></underline> !<br>Tapez ? pour avoir de l\'aide<br>'); // Sauts de ligne avant le message
     scrollToBottom(); 
 }
 
@@ -19,7 +19,9 @@ const commands = {
     help: ['help', '?'],
     os: ['os'],
     info: ['info', 'i'],
-    file: ['file'] 
+    file: ['file'],
+    net: ['net'],
+    cpuusage: ["cpuusage", "cpu"]
 };
 
 input.addEventListener('keydown', (event) => {
@@ -120,12 +122,68 @@ function executeCommand(command) {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
+    } else if (cmd === 'file-ls') {
+        import('./src/commands/file.js').then(module => {
+            module.file_ls(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
+            scrollToBottom();
+        });
     } else if (cmd === "top") {
         scrollToBottom();
     
+    } else if (commands.cpuusage.includes(cmd)) {
+        import('./src/commands/cpuusage.js').then(module => {
+            module.cpuUsage(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'net-ip') {
+        import('./src/commands/net.js').then(module => {
+            module.netIp(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'net-ping') {
+        import('./src/commands/net.js').then(module => {
+            module.netPing(terminal, args);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'mode-view') {
+        import('./src/commands/mode.js').then(module => {
+            module.modeView(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'mode-set') {
+        import('./src/commands/mode.js').then(module => {
+            module.modeSet(terminal, args);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'mode-liste') {
+        import('./src/commands/mode.js').then(module => {
+            module.modeList(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom()
+        });
+    } else if (cmd === 'apt-install') {
+        import('./src/commands/file.js').then(module => {
+            module.aptInstall(terminal, args);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom();
+        });
     } else {
         terminal.innerHTML += `<br><br>Commande non trouvée: <red>${cmd}</red>`;
-        scrollToBottom();
+               scrollToBottom();
     }
 }
 
