@@ -20,6 +20,7 @@ body {
 
 #terminal::-webkit-scrollbar-track {
     background: var(--scrollbar-track, #1b1b1b);
+    border-radius: 10px;
 }
 
 #terminal::-webkit-scrollbar-thumb {

@@ -21,6 +21,7 @@ function createWindow() {
    loadDiscordRPC();
    setActivity();
 }
+const update = true
 
 app.whenReady().then(createWindow);
 
@@ -39,52 +40,53 @@ app.on('activate', () => {
 const currentVersion = '1.0.0-b2';
 const versionUrl = 'https://termi-hub-app.github.io/assets/ver.json';
 
-function checkForUpdates() {
-    https.get(versionUrl, (resp) => {
-        let data = '';
+  function checkForUpdates() {
+     https.get(versionUrl, (resp) => {
+          let data = '';
 
-        resp.on('data', (chunk) => {
-            data += chunk;
-        });
+          resp.on('data', (chunk) => {
+              data += chunk;
+          });
 
-        resp.on('end', () => {
-            try {
-                const { version: serverVersion, message, updateLink } = JSON.parse(data);
+          resp.on('end', () => {
+              try {
+                 const { version: serverVersion, message, updateLink } = JSON.parse(data);
 
-                if (serverVersion !== currentVersion) {
-                    dialog.showMessageBox(mainWindow, {
-                        type: 'warning',
-                        buttons: ['Mettre à jour', 'Annuler'],
-                        title: 'Mise à jour requise',
-                        message: `${message}\nVersion actuelle: ${currentVersion}\nNouvelle version: ${serverVersion}`,
-                        detail: 'Cliquez sur "Mettre à jour" pour télécharger la nouvelle version.',
-                        noLink: true
-                    }).then(result => {
-                        if (result.response === 0) {
-                            shell.openExternal(updateLink);
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse des données de version:', error);
-                dialog.showMessageBox(mainWindow, {
-                  type: 'error',
-                  title: 'Erreur Provided',
-                  message: `Une erreur est survenue, voici les solutions disponibles\n1. Vérifiez votre connection internet\n2. Réinstallez TermiHub`,
-                  detail: 'Si l\'erreur persiste veuillez contacter le développeur (@liveweeeb13 sur discord) ',
-                  noLink: true
-              }).then(result => {
-                  if (result.response === 0) {
-                      shell.openExternal(updateLink);
+                  if (serverVersion !== currentVersion) {
+                      dialog.showMessageBox(mainWindow, {
+                          type: 'warning',
+                          buttons: ['Mettre à jour', 'Annuler'],
+                          title: 'Mise à jour requise',
+                         message: `${message}\nVersion actuelle: ${currentVersion}\nNouvelle version: ${serverVersion}`,
+                         detail: 'Cliquez sur "Mettre à jour" pour télécharger la nouvelle version.',
+                         noLink: true
+                      }).then(result => {
+                          if (result.response === 0) {
+                              shell.openExternal(updateLink);
+                         }
+                     });
                   }
-              });
-            }
-        });
+             } catch (error) {
+                  console.error('Erreur lors de l\'analyse des données de version:', error);
+                 dialog.showMessageBox(mainWindow, {
+                   type: 'error',
+                    title: 'Erreur Provided',
+                    message: `Une erreur est survenue, voici les solutions disponibles\n1. Vérifiez votre connection internet\n2. Réinstallez TermiHub`,
+                    detail: 'Si l\'erreur persiste veuillez contacter le développeur (@liveweeeb13 sur discord) ',
+                    noLink: true
+               }).then(result => {
+                   if (result.response === 0) {
+                       shell.openExternal(updateLink);
+                   }
+                });
+              }
+         });
 
-    }).on('error', (err) => {
-        console.error('Erreur lors de la vérification de la version:', err);
-    });
-}
+     }).on('error', (err) => {
+          console.error('Erreur lors de la vérification de la version:', err);
+      });
+  }
+
 
 const clientId = '1301104881687334922';
 const startTimestamp = Date.now();
