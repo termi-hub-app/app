@@ -1,3 +1,4 @@
+const formatTextWithStyles = require('./utils/formatTextWithStyles');
 
 
 export function infoCommand(terminal) {

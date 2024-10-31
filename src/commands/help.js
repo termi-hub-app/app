@@ -1,3 +1,5 @@
+const formatTextWithStyles = require('./utils/formatTextWithStyles');
+
 export function help() {
     return `
 <br><br><strong>Liste des commandes disponibles :</strong><br>

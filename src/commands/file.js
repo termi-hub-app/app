@@ -1,10 +1,44 @@
 const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process')
+const formatTextWithStyles = require('./utils/formatTextWithStyles');
 
 let currentDirectory = process.cwd();
+export function execute(terminal, args) {
+    if (args.length === 0) {
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucune commande spécifiée pour 'file'.`);
+        return;
+    }
 
-export function cd(terminal, args) {
+    const command = args[0];
+    switch (command) {
+        case 'cd':
+            cd(terminal, args.slice(1));
+            break;
+        case 'create':
+            create(terminal, args.slice(1));
+            break;
+        case 'open':
+            open(terminal);
+            break;
+        case 'view':
+            view(terminal);
+            break;
+        case 'folder':
+            folder(terminal, args.slice(1));
+            break;
+        case 'ls':
+            file_ls(terminal);
+            break;
+        case 'apt-install':
+            aptInstall(terminal, args.slice(1));
+            break;
+        default:
+            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Commande inconnue : ${command}`);
+    }
+}
+
+function cd(terminal, args) {
     if (args.length === 0) {
         terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun chemin spécifié pour 'cd'.`);
         return;
@@ -19,7 +53,7 @@ export function cd(terminal, args) {
     }
 }
 
-export function create(terminal, args) {
+function create(terminal, args) {
     if (args.length === 0) {
         terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun nom de fichier spécifié.`);
         return;
@@ -35,7 +69,7 @@ export function create(terminal, args) {
     });
 }
 
-export function open(terminal) {
+function open(terminal) {
     terminal.innerHTML += formatTextWithStyles(`<br><br>Ouverture de l'explorateur de fichiers...`);
 
     const explorerCommand = process.platform === 'win32' 
@@ -58,11 +92,11 @@ export function open(terminal) {
     });
 }
 
-export function view(terminal) {
+function view(terminal) {
     terminal.innerHTML += formatTextWithStyles(`<br><br>Emplacement courant : <green>${currentDirectory}</green>`);
 }
 
-export function folder(terminal, args) {
+function folder(terminal, args) {
     if (!args || args.length === 0) {
         terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun nom de dossier spécifié.`);
         return;
@@ -78,7 +112,7 @@ export function folder(terminal, args) {
     });
 }
 
-export function file_ls(terminal) {
+function file_ls(terminal) {
     fs.readdir(currentDirectory, (err, files) => {
         if (err) {
             terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Impossible de lire le répertoire : ${err.message}`);
@@ -104,7 +138,7 @@ export function file_ls(terminal) {
     });
 }
 
-export function aptInstall(terminal, args) {
+function aptInstall(terminal, args) {
     if (args.length === 0) {
         terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun paquet spécifié pour 'apt-install'.`);
         return;

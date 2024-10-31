@@ -1,6 +1,7 @@
 const ping = require('ping');
 const { networkInterfaces } = require('os');
 const traceroute = require('traceroute')
+const formatTextWithStyles = require('./utils/formatTextWithStyles');
 
 export function netPing(terminal, args) {
     if (args.length === 0) {

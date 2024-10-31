@@ -1,4 +1,5 @@
 const os = require('os');
+const formatTextWithStyles = require('.../src/utils/formatTextWithStyles');
 
 export function osCommand(terminal) {
   const userInfo = os.userInfo();

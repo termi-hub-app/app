@@ -1,5 +1,5 @@
 const os = require('os');
-
+const formatTextWithStyles = require('../utils/formatTextWithStyles');
 export function cpuUsage(terminal) {
     const cpus = os.cpus();
     const usage = cpus.map(cpu => {

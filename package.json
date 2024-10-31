@@ -1,6 +1,6 @@
 {
   "name": "termihub",
-  "version": "1.0.0-b2",
+  "version": "1.0.0-b3",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
