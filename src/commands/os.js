@@ -1,5 +1,6 @@
 const os = require('os');
-const formatTextWithStyles = require('.../src/utils/formatTextWithStyles');
+const path = require('path');
+const formatTextWithStyles = require(path.join(__dirname, 'src/utils/formatTextWithStyles.js'));
 
 export function osCommand(terminal) {
   const userInfo = os.userInfo();

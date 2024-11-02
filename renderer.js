@@ -13,7 +13,7 @@ function scrollToBottom() {
 }
 
 function showWelcomeMessage() {
-    terminal.innerHTML += formatTextWithStyles(`<br><strong>Bienvenue sur <underline>TermHub <italic>1.0.0-b3</italic></underline></strong> !<br><strong>Mode actuel :</strong> <green>${currentMode}</green><br><strong>Tapez <green>?</green> pour avoir de l\'aide</strong>`);
+    terminal.innerHTML += formatTextWithStyles(`<br><strong>Bienvenue sur <underline>TermiHub <italic>1.0.0-b3</italic></underline></strong> !<br><strong>Mode actuel :</strong> <green>${currentMode}</green><br><strong>Tapez <green>?</green> pour avoir de l\'aide</strong>`);
     scrollToBottom(); 
 }
 
@@ -104,21 +104,21 @@ function executeCommand(command) {
             scrollToBottom();
         });    
 
-    } else if (cmd === 'file-cd') {
+    } else if (cmd === 'file-cd' || cmd === 'cd') {
         import('./src/commands/file.js').then(module => {
             module.cd(terminal, args);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === 'file-create') {
+    } else if (cmd === 'file-create' || cmd === 'create') {
         import('./src/commands/file.js').then(module => {
             module.create(terminal, args);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === 'file-open') {
+    } else if (cmd === 'file-open' || cmd === 'open') {
         import('./src/commands/file.js').then(module => {
             module.open(terminal);
         }).catch(err => {
@@ -132,21 +132,21 @@ function executeCommand(command) {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === 'file-folder') {
+    } else if (cmd === 'file-folder' || cmd === 'folder') {
         import('./src/commands/file.js').then(module => {
             module.folder(terminal, args);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === 'file-ls') {
+    } else if (cmd === 'file-ls' || cmd === 'ls') {
         import('./src/commands/file.js').then(module => {
             module.file_ls(terminal);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'importation de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === "top") {
+    } else if (cmd === "scroll") {
         scrollToBottom();
     
     } else if (commands.cpuusage.includes(cmd)) {
@@ -156,26 +156,26 @@ function executeCommand(command) {
             terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
             scrollToBottom()
         });
-    } else if (cmd === 'net-ip') {
+    } else if (cmd === 'net-ip' || cmd === 'ip') {
         import('./src/commands/net.js').then(module => {
             module.netIp(terminal);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
             scrollToBottom()
         });
-    } else if (cmd === 'net-ping') {
+    } else if (cmd === 'net-ping' || cmd === 'ping') {
         import('./src/commands/net.js').then(module => {
             module.netPing(terminal, args);
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
             scrollToBottom()
         });
-    } else if (cmd === 'mode-view') {
+    } else if (cmd === 'theme-view') {
         terminal.innerHTML += formatTextWithStyles(`<br><br>Mode actuel : <green>${currentMode}</green>`);
         scrollToBottom();
-    } else if (cmd === 'mode-set') {
+    } else if (cmd === 'theme-set') {
         if (args.length === 0) {
-            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun mode spécifié pour 'mode-set'.`);
+            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun mode spécifié pour 'theme-set'.`);
         } else {
             const newMode = args[0].toLowerCase();
             if (themes[newMode] !== undefined) {
@@ -188,8 +188,8 @@ function executeCommand(command) {
             }
         }
         scrollToBottom();
-    } else if (cmd === 'mode-liste') {
-        displayAvailableThemes()
+    } else if (cmd === 'liste' || cmd === 'theme-liste') {
+        displayAvailableThemes();
         scrollToBottom();
     }  else if (cmd === 'apt-install') {
         import('./src/commands/file.js').then(module => {
@@ -198,20 +198,20 @@ function executeCommand(command) {
             terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
             scrollToBottom();
         });
-    } else if (cmd === 'mode-install') {
+    } else if (cmd === 'theme-install'|| cmd === 'theme-add') {
         if (args.length === 0) {
             terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun nom de thème spécifié.`);
         } else {
             const themeName = args[0].toLowerCase();
             installTheme(themeName);
         }
-    } else if (cmd === 'mode-uninstall') {
+    } else if (cmd === 'theme-uninstall' || cmd === 'theme-remove') {
         if (args.length === 0) {
             terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun nom de thème spécifié.`);
         } else {
             const themeName = args[0].toLowerCase();
             uninstallTheme(themeName);
-        }
+        }    
     } else {
         terminal.innerHTML += `<br><br>Commande non trouvée: <red>${cmd}</red>`;
                scrollToBottom();
@@ -236,9 +236,60 @@ function executeCommand(command) {
 //MOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE
 
 
-const themeInstallPath = path.join(__dirname, 'themeinstall.json');
-let currentMode = localStorage.getItem('themeMode') || 'default';
+const localeDir = path.join(process.env.APPDATA || path.join(process.env.HOME, '.config'), 'termihub', 'locales');
+const themeInstallPath = path.join(localeDir, 'themeinstall.json');
 
+function createDefaultThemeFile() {
+    if (!fs.existsSync(themeInstallPath)) {
+        const defaultThemes = {
+            "installedThemes": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "backgroundColor": "black",
+                        "color": "white",
+                        "--scrollbar-track": "#1b1b1b",
+                        "--scrollbar-thumb": "#555",
+                        "--input-background": "#333",
+                        "--input-color": "white"
+                    }
+                },
+                {
+                    "name": "light",
+                    "properties": {
+                        "backgroundColor": "white",
+                        "color": "black",
+                        "--scrollbar-track": "#555",
+                        "--scrollbar-thumb": "#1b1b1b",
+                        "--input-background": "white",
+                        "--input-color": "#333"
+                    }
+                },
+                {
+                    "name": "halloween",
+                    "properties": {
+                        "backgroundColor": "#1a1a1a",
+                        "color": "#ff7518",
+                        "--scrollbar-track": "#2c2c2c",
+                        "--scrollbar-thumb": "#ff7518",
+                        "--input-background": "#333",
+                        "--input-color": "white"
+                    }
+                }
+            ]
+        };
+        
+        fs.mkdirSync(localeDir, { recursive: true });
+        fs.writeFileSync(themeInstallPath, JSON.stringify(defaultThemes, null, 2), 'utf8');
+        console.log(`Fichier ${themeInstallPath} créé avec les thèmes par défaut.`);
+    } else {
+        console.log(`Le fichier ${themeInstallPath} existe déjà, pas de création nécessaire.`);
+    }
+}
+
+createDefaultThemeFile(); 
+
+let currentMode = localStorage.getItem('themeMode') || 'default';
 
 function loadThemes() {
     const themes = {};
@@ -255,7 +306,7 @@ function loadThemes() {
     return themes;
 }
 
-let themes = loadThemes(); 
+let themes = loadThemes();
 
 function updateThemeInstallFile() {
     const installedThemes = Object.keys(themes).map(themeName => ({
@@ -269,9 +320,9 @@ function updateThemeInstallFile() {
 function displayAvailableThemes() {
     const themeNames = Object.keys(themes);
     
-    terminal.innerHTML += formatTextWithStyles(`<br><br>Thèmes disponibles :`);
+    terminal.innerHTML += formatTextWithStyles(`<br><br><strong>Thèmes disponibles :</strong>`);
     themeNames.forEach(theme => {
-        terminal.innerHTML += formatTextWithStyles(`<br><br>- <green>${theme}</green>`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><strong>-</strong> <green>${theme}</green>`);
     });
     
     updateThemeInstallFile();
@@ -280,9 +331,9 @@ function displayAvailableThemes() {
 }
 
 
-
 function applyTheme(themes, mode) {
-    console.log(themes, mode)
+    console.log(themes, mode);
+
     if (mode === 'cook') {
         document.body.style.backgroundColor = getRandomColor();
         document.body.style.color = getRandomColor();
@@ -290,36 +341,52 @@ function applyTheme(themes, mode) {
         document.documentElement.style.setProperty('--scrollbar-thumb', getRandomColor());
     } else {
         const theme = themes[mode] || themes.default;
-        document.body.style.backgroundColor = theme.backgroundColor;
-        document.body.style.color = theme.color;
-        document.documentElement.style.setProperty('--scrollbar-track', theme['--scrollbar-track']);
-        document.documentElement.style.setProperty('--scrollbar-thumb', theme['--scrollbar-thumb']);
-        document.documentElement.style.setProperty('--input-background', theme['--input-background']);
-        document.documentElement.style.setProperty('--input-color', theme['--input-color']);
+
+        if (theme) {
+            Object.keys(theme).forEach(property => {
+                if (property.startsWith('--')) {
+                    document.documentElement.style.setProperty(property, theme[property]);
+                } else {
+                    document.body.style[property] = theme[property];
+                }
+            });
+        } else {
+            console.error(`Le thème '${mode}' n'existe pas et aucun thème par défaut n'a été défini.`);
+        }
     }
 }
-
 function getRandomColor() {
     return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
 }
 
 async function installTheme(themeName) {
     const themeUrl = 'https://termi-hub-app.github.io/assets/themes.json';
-
+    const startTime = Date.now()
     try {
         const response = await fetch(themeUrl);
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP ${response.status}`);
+        }
         const data = await response.json();
-
+            terminal.innerHTML += formatTextWithStyles(`<br><br><purple>Installation du theme ${themeName}...</puple>`)
         if (data.themes && data.themes[themeName]) {
-            // Ajouter le thème
             const newTheme = {
                 name: themeName,
                 properties: data.themes[themeName]
             };
-            themes[themeName] = newTheme.properties;
-            terminal.innerHTML += formatTextWithStyles(`<br><br>Thème <green>${themeName}</green> installé avec succès !`);
 
-            // Charger les thèmes
+
+            if (themes[themeName]) {
+                terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Le thème <italic>${themeName}</italic> est déjà installé.`);
+                scrollToBottom();
+                return;
+            }
+
+            const endTime = Date.now();
+            const timeTaken = ((endTime - startTime) / 1000).toFixed(2); 
+            themes[themeName] = newTheme.properties;
+            terminal.innerHTML += formatTextWithStyles(`<br><br>Thème <green><strong>${themeName}</strong></green> installé avec succès !`);
+
             let installedThemes = [];
             if (fs.existsSync(themeInstallPath)) {
                 const fileData = fs.readFileSync(themeInstallPath, 'utf8');
@@ -327,27 +394,22 @@ async function installTheme(themeName) {
                 installedThemes = jsonContent.installedThemes || [];
             }
 
-            // Ajoute le thème a la liste
-            if (!installedThemes.some(theme => theme.name === themeName)) {
-                installedThemes.push(newTheme);
-
-                // Met a jour le fichier themeinstall.json
-                fs.writeFileSync(themeInstallPath, JSON.stringify({ installedThemes: installedThemes }, null, 2), 'utf8');
-            }
+            installedThemes.push(newTheme);
+            fs.writeFileSync(themeInstallPath, JSON.stringify({ installedThemes: installedThemes }, null, 2), 'utf8');
         } else {
-            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Thème non trouvé : ${themeName}`);
+            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Thème non trouvé : <italic>${themeName}</italic>`);
         }
     } catch (error) {
-        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Impossible de récupérer le thème depuis le fichier JSON : ${error.message}`);
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Impossible de récupérer le thème : ${error.message}`);
     }
     scrollToBottom();
 }
 
-
 async function uninstallTheme(themeName) {
-    if (!(themeName in themes) || (themeName === 'default' || themeName === 'halloween')) {
-        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Impossible de désinstaller le thème : ${themeName}.` +
+    if (!(themeName in themes) || (['default', 'halloween', 'light'].includes(themeName))) {
+        terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Impossible de désinstaller le thème <italic>${themeName}</italic>.` +
             ` Ce thème ne peut pas être désinstallé.`);
+        scrollToBottom();
         return;
     }
 
@@ -359,8 +421,9 @@ async function uninstallTheme(themeName) {
         const jsonContent = JSON.parse(fileData);
         installedThemes = jsonContent.installedThemes || [];
     }
+
     installedThemes = installedThemes.filter(theme => theme.name !== themeName);
     fs.writeFileSync(themeInstallPath, JSON.stringify({ installedThemes: installedThemes }, null, 2), 'utf8');
-    terminal.innerHTML += formatTextWithStyles(`<br><br>Thème <green>${themeName}</green> désinstallé avec succès !`);
+    terminal.innerHTML += formatTextWithStyles(`<br><br>Thème <green><strong>${themeName}</strong></green> désinstallé avec succès !`);
+    scrollToBottom();
 }
-

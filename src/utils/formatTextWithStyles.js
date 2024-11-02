@@ -1,4 +1,4 @@
-module.exports = (text)=> {
+module.exports = function formatTextWithStyles(text) {
     return text
         .replace(/<red>/g, '<span class="red">')
         .replace(/<\/red>/g, '</span>')
@@ -13,5 +13,7 @@ module.exports = (text)=> {
         .replace(/<italic>/g, '<span class="italic">')
         .replace(/<\/italic>/g, '</span>')
         .replace(/<strong>/g, '<strong>')
-        .replace(/<\/strong>/g, '</strong>');
-}
+        .replace(/<\/strong>/g, '</strong>')
+        .replace(/<purple>/g, '<span class="purple">')
+        .replace(/<\/purple>/g, '</span>');
+};

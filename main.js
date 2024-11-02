@@ -26,8 +26,13 @@ function createWindow() {
     setActivity();
 }
 
-const update = true;
-app.whenReady().then(createWindow);
+const currentVersion = '1.0.0-b3';
+const versionUrl = 'https://termi-hub-app.github.io/assets/ver.json';
+
+app.whenReady().then(() => {
+    loadThemes(); // Charger les thèmes au démarrage
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -40,9 +45,6 @@ app.on('activate', () => {
         createWindow();
     }
 });
-
-const currentVersion = '1.0.0-b2';
-const versionUrl = 'https://termi-hub-app.github.io/assets/ver.json';
 
 function checkForUpdates() {
     https.get(versionUrl, (resp) => {
@@ -78,10 +80,6 @@ function checkForUpdates() {
                     message: `Une erreur est survenue, voici les solutions disponibles\n1. Vérifiez votre connexion internet\n2. Réinstallez TermiHub`,
                     detail: 'Si l\'erreur persiste veuillez contacter le développeur (@liveweeeb13 sur discord)',
                     noLink: true
-                }).then(result => {
-                    if (result.response === 0) {
-                        shell.openExternal(updateLink);
-                    }
                 });
             }
         });
@@ -177,7 +175,7 @@ const menuTemplate = [
     },
 ];
 const menu = Menu.buildFromTemplate(menuTemplate);
-// Menu.setApplicationMenu(menu);
+Menu.setApplicationMenu(menu);
 
 function importThemes(filePath) {
     try {
@@ -191,14 +189,25 @@ function importThemes(filePath) {
             });
 
             fs.writeFileSync(themeInstallPath, JSON.stringify(themeData, null, 2), 'utf-8');
-       //     console.log('Thèmes importés avec succès.');
-            app.quit();
-            createWindow()
+            dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: 'Importation réussie',
+                message: 'Les thèmes ont été importés avec succès.',
+            });
         } else {
-     //       console.error('Format de données incorrect, attendu un tableau de themes.');
+            dialog.showMessageBox(mainWindow, {
+                type: 'error',
+                title: 'Erreur d\'importation',
+                message: 'Le fichier JSON ne contient pas de thèmes valides.',
+            });
         }
     } catch (error) {
-     //   console.error('Erreur d\'importation :', error);
+        console.error('Erreur d\'importation :', error);
+        dialog.showMessageBox(mainWindow, {
+            type: 'error',
+            title: 'Erreur',
+            message: `Une erreur est survenue lors de l'importation : ${error.message}`,
+        });
     }
 }
 
@@ -213,14 +222,14 @@ function loadThemes() {
                 themeData.installedThemes.forEach(theme => {
                     themes[theme.name] = theme.properties;
                 });
-           //    console.log("Thèmes chargés avec succès:", themes);
+                console.log("Thèmes chargés avec succès:", themes);
             }
         } else {
-      //      console.log("Aucun fichier de thème trouvé, création d'un fichier par défaut.");
+            console.log("Aucun fichier de thème trouvé, création d'un fichier par défaut.");
             exportThemes(themeFilePath);
         }
     } catch (error) {
-  //      console.error('Erreur lors du chargement des thèmes:', error);
+        console.error('Erreur lors du chargement des thèmes:', error);
     }
 }
 
@@ -235,9 +244,11 @@ function exportThemes(filePath) {
         if (err) {
             console.error('Erreur lors de l\'exportation des thèmes :', err);
         } else {
-   //         console.log('Thèmes exportés avec succès dans', filePath);
+            dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: 'Exportation réussie',
+                message: 'Les thèmes ont été exportés avec succès.',
+            });
         }
     });
 }
-
-loadThemes()

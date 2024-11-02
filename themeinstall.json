@@ -1,48 +1,37 @@
 {
   "installedThemes": [
-    {
-      "name": "default",
-      "properties": {
-        "backgroundColor": "black",
-        "color": "white",
-        "--scrollbar-track": "#1b1b1b",
-        "--scrollbar-thumb": "#555",
-        "--input-background": "#333",
-        "--input-color": "white"
-      }
-    },
-    {
-      "name": "halloween",
-      "properties": {
-        "backgroundColor": "#1a1a1a",
-        "color": "#ff7518",
-        "--scrollbar-track": "#2c2c2c",
-        "--scrollbar-thumb": "#ff7518",
-        "--input-background": "#333",
-        "--input-color": "white"
-      }
-    },
-    {
-      "name": "spooky",
-      "properties": {
-        "backgroundColor": "#0099ff",
-        "color": "#25edf7",
-        "--scrollbar-track": "#1b1b1b",
-        "--scrollbar-thumb": "#ffcc00",
-        "--input-background": "#ff0000",
-        "--input-color": "#fff000"
-      }
-    },
-    {
-      "name": "dsqdsqds",
-      "properties": {
-        "backgroundColor": "#ff6b6b",
-        "color": "#ffdd59",
-        "--scrollbar-track": "#ffadad",
-        "--scrollbar-thumb": "#ff6363",
-        "--input-background": "#ffadad",
-        "--input-color": "#3b3b3b"
-      }
-    }
-  ]
+                {
+                    "name": "default",
+                    "properties": {
+                        "backgroundColor": "black",
+                        "color": "white",
+                        "--scrollbar-track": "#1b1b1b",
+                        "--scrollbar-thumb": "#555",
+                        "--input-background": "#333",
+                        "--input-color": "white"
+                    }
+                },
+                {
+                    "name": "light",
+                    "properties": {
+                        "backgroundColor": "white",
+                        "color": "black",
+                        "--scrollbar-track": "#555",
+                        "--scrollbar-thumb": "#1b1b1b",
+                        "--input-background": "white",
+                        "--input-color": "#333"
+                    }
+                },
+                {
+                    "name": "halloween",
+                    "properties": {
+                        "backgroundColor": "#1a1a1a",
+                        "color": "#ff7518",
+                        "--scrollbar-track": "#2c2c2c",
+                        "--scrollbar-thumb": "#ff7518",
+                        "--input-background": "#333",
+                        "--input-color": "white"
+                    }
+                }
+            ]
 }

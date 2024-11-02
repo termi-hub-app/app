@@ -1,5 +1,6 @@
 const os = require('os');
-const formatTextWithStyles = require('../utils/formatTextWithStyles');
+const path = require('path');
+const formatTextWithStyles = require(path.join(__dirname, 'src/utils/formatTextWithStyles.js'));
 export function cpuUsage(terminal) {
     const cpus = os.cpus();
     const usage = cpus.map(cpu => {
