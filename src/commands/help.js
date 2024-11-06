@@ -22,8 +22,16 @@ export function help(terminal) {
  - theme-liste | liste : Affiche les themes disponibles
  - theme-set : Change le theme
  - apt-install : Install un package (doit avoir choco)
- - 🆕 theme-install | theme-add <nom du theme> : Installe le theme
- - 🆕 theme-uninstall | theme-remove <nom du theme> : Desinstalle le theme 
+ - theme-install | theme-add <nom du theme> : Installe le theme
+ - theme-uninstall | theme-remove <nom du theme> : Desinstalle le theme 
+ - test : Affiche les different type de texte present
+ - 🆕 whois &lt;url&gt (option) : Récupère les informations de domaine pour l'URL spécifiée.
+<strong>Options disponibles</strong> :
+    - <strong><purple>ipv4</purple></strong> : Envoie l'adresse IP au format IPv4 .
+    - <strong><purple>ipv6</purple></strong> :  Envoie l'adresse IP au format IPv6.
+    - <strong><purple>ping</purple></strong> : Ping l'adresse IP obtenue.
+ - 🆕 ram : Affiche l'utilisation de la memoire RAM
+ - 🆕 disk : Affiche l'utilisation des disques
      `;
  
  }

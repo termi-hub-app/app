@@ -26,11 +26,11 @@ function createWindow() {
     setActivity();
 }
 
-const currentVersion = '1.0.0-b3';
+const currentVersion = '1.0.0-b4';
 const versionUrl = 'https://termi-hub-app.github.io/assets/ver.json';
 
 app.whenReady().then(() => {
-    loadThemes(); // Charger les thèmes au démarrage
+    loadThemes(); 
     createWindow();
 });
 

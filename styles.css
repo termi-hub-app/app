@@ -2,6 +2,7 @@ body {
     background-color: var(--background-color, black);
     font-size: 20px;
     color: var(--text-color, white);
+    background: (--background, none);
     font-family: monospace;
     overflow: hidden;
 }
@@ -42,6 +43,22 @@ input {
     font-family: monospace;
     outline: none;
     font-size: 16px;
+}
+
+.input-container {
+    position: relative;
+}
+#input {
+    padding-left: 20px;
+}
+.input-container::before {
+    content: "§";
+    position: absolute;
+    left: 5px; 
+    top: 50%;
+    transform: translateY(-50%); 
+    color: gray; 
+    pointer-events: none; 
 }
 
 .red { color: var(--red-color, red); }

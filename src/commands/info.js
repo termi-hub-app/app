@@ -5,7 +5,7 @@ export function infoCommand(terminal) {
 
   terminal.innerHTML += formatTextWithStyles(`
 <br><br><strong><underline><italic>Informations</italic></underline></srtong><br>
-Version : 1.0.0-b3
+Version : 1.0.0-b4
 
 <strong>Developpeur : <green>liveweeeb</green></strong>
 <strong>Discord : <purple>https://discord.gg/4baaMs9Mnt</purple></strong>

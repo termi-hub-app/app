@@ -1,10 +1,64 @@
 {
   "name": "termihub",
-  "version": "1.0.0-b3",
+  "version": "1.0.0-b4",
   "author": "liveweeeb",
   "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:windows": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder"
+  },
+  "build": {
+    "appId": "com.liveweeeb.termihub",
+    "productName": "TermiHub",
+    "files": [
+      "node_modules/**/*",
+      "src/**/*",
+      "command/**/*",
+      "index.html",
+      "logo.png",
+      "logo.svg",
+      "main.js",
+      "package-lock.json",
+      "package.json",
+      "themeinstall.json",
+      "renderer.js",
+      "styles.css"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "logo.ico",
+      "asar": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ],
+      "icon": "logo.svg",
+      "executableName": "termihub",
+      "category": "Utility"
+    },
+    "nsis": {
+      "perMachine": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8"
+  },
   "dependencies": {
     "discord-rpc": "^4.0.1",
+    "node-disk-info": "^1.3.0",
     "ping": "^0.4.4",
     "traceroute": "^1.0.0"
   }

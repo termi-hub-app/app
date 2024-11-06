@@ -1,6 +1,7 @@
 const terminal = document.getElementById('terminal');
 const path = require('path');
 const fs = require('fs');
+const { shell } = require('electron')
 const input = document.getElementById('input');
 const formatTextWithStyles = require('./src/utils/formatTextWithStyles');
 
@@ -13,7 +14,7 @@ function scrollToBottom() {
 }
 
 function showWelcomeMessage() {
-    terminal.innerHTML += formatTextWithStyles(`<br><strong>Bienvenue sur <underline>TermiHub <italic>1.0.0-b3</italic></underline></strong> !<br><strong>Mode actuel :</strong> <green>${currentMode}</green><br><strong>Tapez <green>?</green> pour avoir de l\'aide</strong>`);
+    terminal.innerHTML += formatTextWithStyles(`<br><strong>Bienvenue sur <underline>TermiHub <italic>1.0.0-b4</italic></underline></strong> !<br><strong>Mode actuel :</strong> <green>${currentMode}</green><br><strong>Tapez <green>?</green> pour avoir de l\'aide</strong>`);
     scrollToBottom(); 
 }
 
@@ -32,7 +33,11 @@ const commands = {
     file: ['file'],
     net: ['net'],
     cpuusage: ["cpuusage", "cpu"],
-    mode: ['mode-view', 'mode-set', 'mode-liste']
+    mode: ['mode-view', 'mode-set', 'mode-liste'],
+    whois: ['whois'],
+    test: ['test' ,'t'],
+    ramusage: ["ram", 'ru'],
+    diskUsage: ['disk', 'du']
 };
 
 input.addEventListener('keydown', (event) => {
@@ -62,6 +67,16 @@ input.addEventListener('keydown', (event) => {
     }
 });
 
+
+document.addEventListener('keydown', (event) => {
+    if (document.activeElement !== input && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
+        input.focus();
+    }
+});
+
+
+
+
 function executeCommand(command) {
     const [cmd, ...args] = command.split(' ');
 
@@ -74,7 +89,7 @@ function executeCommand(command) {
     scrollToBottom();
   */ 
     if (commands.clear.includes(cmd)) {
-        terminal.innerHTML = ''; // Efface
+        terminal.innerHTML = ''; 
         scrollToBottom();
     } else if (commands.echo.includes(cmd)) {
         const formattedText = formatTextWithStyles(args.join(' '));
@@ -212,7 +227,49 @@ function executeCommand(command) {
             const themeName = args[0].toLowerCase();
             uninstallTheme(themeName);
         }    
-    } else {
+    } else if (commands.whois.includes(cmd)) {
+        if (args.length === 0) {
+            terminal.innerHTML += formatTextWithStyles(`<br><br><red>Erreur :</red> Aucun domaine spécifié. Utilisation : whois <url> [-4 | -6 | -ping]<br>`);
+        } else {
+            const url = args[0]; 
+            const options = {
+                ipv4: args.includes('-4'), 
+                ipv6: args.includes('-6'), 
+                ping: args.includes('-ping') 
+            };
+            import('./src/commands/whois.js').then(module => {
+                module.whoisCommand(terminal, url, options);
+            }).catch(err => {
+                terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+                scrollToBottom()
+            });
+        }
+        
+     } else if (commands.ramusage.includes(cmd)) {
+        import('./src/commands/ramusage.js').then(module => {
+            module.memUsage(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom();
+        });
+
+    } else if (commands.diskUsage.includes(cmd)) {
+        import('./src/commands/diskusage.js').then(module => {
+            module.getDiskUsage(terminal);
+        }).catch(err => {
+            terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
+            scrollToBottom();
+        });
+
+    } else if (commands.test.includes(cmd)) {
+        import('./src/commands/test.js').then(module => {
+            module.testCommand(terminal) 
+            scrollToBottom()
+        });
+        } else if (cmd === 'pingouin') {
+            shell.openExternal('pingouin');
+            scrollToBottom();
+        } else {
         terminal.innerHTML += `<br><br>Commande non trouvée: <red>${cmd}</red>`;
                scrollToBottom();
     }
