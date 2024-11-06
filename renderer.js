@@ -248,6 +248,7 @@ function executeCommand(command) {
      } else if (commands.ramusage.includes(cmd)) {
         import('./src/commands/ramusage.js').then(module => {
             module.memUsage(terminal);
+            scrollToBottom();
         }).catch(err => {
             terminal.innerHTML += `<br>Erreur lors de l'exécution de la commande : ${err.message}`;
             scrollToBottom();
@@ -273,6 +274,7 @@ function executeCommand(command) {
         terminal.innerHTML += `<br><br>Commande non trouvée: <red>${cmd}</red>`;
                scrollToBottom();
     }
+    scrollToBottom();
 }
 
 
