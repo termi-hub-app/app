@@ -133,7 +133,8 @@ input {
     cursor: default;
 }
 
-/* Couleurs */
+/* Terminal Styling */
+/* Colors */
 .red { color: var(--red-color); }
 .green { color: var(--green-color); }
 .yellow { color: var(--yellow-color); }
@@ -170,6 +171,31 @@ input {
 .azure { color: var(--azure-color); }
 .linen { color: var(--linen-color); }
 .snow { color: var(--snow-color); }
+/* Font */
 strong { font-weight: bold; }
 .underline { text-decoration: underline; }
 .italic { font-style: italic; }
+
+/* Terminal link */
+.terminal-link {
+    cursor: pointer;
+    position: relative;
+    color: #3498db;
+    text-decoration: underline;
+}
+.terminal-link:hover {
+    color: #1e71a9;
+}
+
+/* Custom tooltip styling (Terminal link) */
+.terminal-tooltip {
+    display: none;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 99999999;
+}

@@ -183,7 +183,7 @@ const menuTemplate = [
                 },
             }
         ],
-    }
+    },
 ];
 const menu = Menu.buildFromTemplate(menuTemplate);
 Menu.setApplicationMenu(menu);

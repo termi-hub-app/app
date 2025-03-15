@@ -1,4 +1,10 @@
 module.exports = function formatText(text) {
+    // Only match URLs that aren't already in HTML tags
+    text = text.replace(
+        /(?![^<]*>)(https?:\/\/[^\s<>"]+)/g, 
+        '<span class="terminal-link" data-url="$1" textWhenHover="CTRL+Click to open the link">$1</span>'
+    );
+
     return text
         .replace(/\n/g, '<br>')
         .replace(/<red>/g, '<span class="red">')
@@ -13,8 +19,8 @@ module.exports = function formatText(text) {
         .replace(/<\/underline>/g, '</span>')
         .replace(/<italic>/g, '<span class="italic">')
         .replace(/<\/italic>/g, '</span>')
-        .replace(/<strong>/g, '<strong>')
-        .replace(/<\/strong>/g, '</strong>')
+        .replace(/<bold>/g, '<strong>')
+        .replace(/<\/bold>/g, '</strong>')
         .replace(/<gray>/g, '<span class="gray">')
         .replace(/<\/gray>/g, '</span>')
         .replace(/<black>/g, '<span class="black">')

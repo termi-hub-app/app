@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { shell } = require('electron');
 const formatText = require('./utils/HTMLFormater.js');
+const _APP = require('./_APPINFO.js');
 
 class TerminalManager {
     constructor() {
@@ -53,6 +54,37 @@ class TerminalManager {
 
     setupEventListeners() {
         this.input.addEventListener('keydown', this.handleInput.bind(this));
+        
+        // Create tooltip element
+        const tooltip = document.createElement('div');
+        tooltip.className = 'terminal-tooltip';
+        tooltip.textContent = 'CTRL+Click to open the link';
+        document.body.appendChild(tooltip);
+        
+        // Handle URL interactions
+        this.terminal.addEventListener('mousemove', (e) => {
+            const link = e.target.closest('.terminal-link');
+            if (link && !e.ctrlKey) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+            } else {
+                tooltip.style.display = 'none';
+            }
+        });
+
+        this.terminal.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+        });
+
+        this.terminal.addEventListener('click', (e) => {
+            const link = e.target.closest('.terminal-link');
+            if (link && e.ctrlKey) {
+                const url = link.dataset.url;
+                shell.openExternal(url);
+            }
+        });
+
         document.addEventListener('keydown', (e) => {
             if (document.activeElement !== this.input && !e.ctrlKey && !e.altKey) {
                 this.input.focus();
@@ -124,16 +156,15 @@ class TerminalManager {
 
     showWelcome() {
         if (this.welcomeShown) return;
+
         this.terminal.innerHTML += formatText(
-            `\n<strong>Bienvenue sur <underline>TermiHub <italic>1.0.0-b4</italic></underline></strong>` +
-            `\n<strong>Mode actuel :</strong> <green>${this.currentMode}</green>` +
-            `\n<strong>Tapez <green>?</green> pour avoir de l'aide</strong>`
+            `\n<bold>Welcome to <underline>TermiHub <italic>${_APP.version.important}</italic></underline></bold>`
         );
         this.welcomeShown = true;
     }
 
     clearTerminal() {
-        this.terminal.innerHTML = '';
+        this.logSystem.clear();
     }
 
     scrollToBottom() {
@@ -145,7 +176,7 @@ class TerminalManager {
             {
                 name: "default",
                 properties: {
-                    backgroundColor: "black",
+                    "--background-color": "black",
                     color: "white",
                     "--scrollbar-track": "#1b1b1b",
                     "--scrollbar-thumb": "#555",
@@ -156,7 +187,7 @@ class TerminalManager {
             {
                 name: "light",
                 properties: {
-                    backgroundColor: "white",
+                    "--background-color": "white",
                     color: "black",
                     "--scrollbar-track": "#555",
                     "--scrollbar-thumb": "#1b1b1b",
@@ -167,7 +198,7 @@ class TerminalManager {
             {
                 name: "halloween",
                 properties: {
-                    backgroundColor: "#1a1a1a",
+                    "--background-color": "#1a1a1a",
                     color: "#ff7518",
                     "--scrollbar-track": "#2c2c2c",
                     "--scrollbar-thumb": "#ff7518",

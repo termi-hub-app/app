@@ -23,42 +23,48 @@ async function uninstall(themeName) {
     scrollToBottom();
 }
 
-async function install(themeName) {
-    const themeUrl = 'https://termi-hub-app.github.io/assets/themes.json';
-    const startTime = Date.now();
+async function install(themeSource, logSys) {
     try {
-        const response = await fetch(themeUrl);
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP ${response.status}`);
-        }
-        const data = await response.json();
-        terminal.innerHTML += formatText(`\n\n<purple>Installation du theme ${themeName}...</purple>`);
-        if (data.themes && data.themes[themeName]) {
-            const newTheme = {
-                name: themeName,
-                properties: data.themes[themeName]
-            };
-
-            if (themes[themeName]) {
-                terminal.innerHTML += formatText(`\n\n<red>Erreur :</red> Le thème <italic>${themeName}</italic> est déjà installé.`);
-                scrollToBottom();
-                return;
-            }
-
-            const endTime = Date.now();
-            const timeTaken = ((endTime - startTime) / 1000).toFixed(2); 
-            themes[themeName] = newTheme.properties;
-            terminal.innerHTML += formatText(`\n\nThème <green><strong>${themeName}</strong></green> installé avec succès !`);
-
-            const themeFilePath = path.join(themesDirPath, `${themeName}.json`);
-            fs.writeFileSync(themeFilePath, JSON.stringify(newTheme, null, 2), 'utf8');
+        let themeData;
+        const isTermTheme = themeSource.toLowerCase().endsWith('.termtheme');
+        
+        if (themeSource.startsWith('http')) {
+            logSys.info(`Downloading theme from ${themeSource}...`);
+            const response = await fetch(themeSource);
+            if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+            themeData = await response.json();
         } else {
-            terminal.innerHTML += formatText(`\n\n<red>Erreur :</red> Thème non trouvé : <italic>${themeName}</italic>`);
+            if (!fs.existsSync(themeSource)) {
+                throw new Error('Theme file not found');
+            }
+            themeData = JSON.parse(fs.readFileSync(themeSource, 'utf8'));
         }
+
+        if (!themeData.name || !themeData.properties) {
+            throw new Error('Invalid theme format');
+        }
+
+        const themeName = themeData.name;
+        if (client.THEME.themes[themeName]) {
+            logSys.error(`Theme '${themeName}' is already installed`);
+            return;
+        }
+
+        // Get base filename without extension
+        const baseFilename = path.basename(themeSource).replace(/\.(termtheme|json)$/i, '');
+        const themeFilePath = path.join(__dirname, '..', 'STORAGE', 'themes', `${baseFilename}.json`);
+        
+        fs.writeFileSync(themeFilePath, JSON.stringify(themeData, null, 2));
+        client.THEME.themes[themeName] = themeData.properties;
+        
+        if (isTermTheme) {
+            logSys.info(`Converted ${baseFilename}.termtheme to ${baseFilename}.json`);
+        }
+        logSys.success(`Theme '${themeName}' installed successfully`);
+
     } catch (error) {
-        terminal.innerHTML += formatText(`\n\n<red>Erreur :</red> Impossible de récupérer le thème : ${error.message}`);
+        logSys.error(`Failed to install theme: ${error.message}`);
     }
-    scrollToBottom();
 }
 
 function apply(themes, mode) {
@@ -95,8 +101,7 @@ module.exports = {
     COMMAND: "theme",
     execute: (client, logSys, input, terminal, formatText) => {
         const cmd = client.cmdin.args[0];
-        const themeName = client.cmdin.args[1];
-        const themePath = path.join(__dirname, '..', 'STORAGE', 'themes');
+        const themeArg = client.cmdin.args[1];
         
         switch (cmd) {
             case 'list':
@@ -105,20 +110,32 @@ module.exports = {
                 break;
                 
             case 'apply':
-                if (!themeName) {
+                if (!themeArg) {
                     logSys.error("Please provide a theme name");
                     return;
                 }
-                if (!client.THEME.themes[themeName]) {
-                    logSys.error(`Theme '${themeName}' not found`);
+                if (!client.THEME.themes[themeArg]) {
+                    logSys.error(`Theme '${themeArg}' not found`);
                     return;
                 }
-                client.THEME.setTheme(themeName);
-                localStorage.setItem('themeMode', themeName);
-                logSys.success(`Applied theme: ${themeName}`);
+                client.THEME.setTheme(themeArg);
+                localStorage.setItem('themeMode', themeArg);
+                logSys.success(`Applied theme: ${themeArg}`);
+                break;
+
+            case 'install':
+                if (!themeArg) {
+                    logSys.error("Please provide a theme URL or file path");
+                    logSys.info("Usage: theme install <url|file>");
+                    logSys.info("Examples:");
+                    logSys.info("  theme install https://example.com/theme.json");
+                    logSys.info("  theme install ./mytheme.termtheme");
+                    return;
+                }
+                install(themeArg, logSys);
                 break;
             default:
-                logSys.error("Usage: theme [list|apply] [theme-name]");
+                logSys.error("Usage: theme <list|apply|install> [theme-name|url]");
         }
     }
 };
