@@ -1,0 +1,11 @@
+{
+    "name": "halloween",
+    "properties": {
+        "backgroundColor": "#1a1a1a",
+        "color": "#ff7518",
+        "--scrollbar-track": "#2c2c2c",
+        "--scrollbar-thumb": "#ff7518",
+        "--input-background": "#333",
+        "--input-color": "white"
+    }
+}

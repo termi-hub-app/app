@@ -1,0 +1,11 @@
+{
+    "name": "light",
+    "properties": {
+        "backgroundColor": "white",
+        "color": "black",
+        "--scrollbar-track": "#555",
+        "--scrollbar-thumb": "#1b1b1b",
+        "--input-background": "white",
+        "--input-color": "#333"
+    }
+}

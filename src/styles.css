@@ -1,0 +1,175 @@
+:root {
+    /* Couleurs */
+    --red-color: red;
+    --green-color: green;
+    --yellow-color: yellow;
+    --blue-color: blue;
+    --purple-color: purple;
+    --gray-color: gray;
+    --black-color: black;
+    --white-color: white;
+    --cyan-color: cyan;
+    --magenta-color: magenta;
+    --brown-color: brown;
+    --orange-color: orange;
+    --pink-color: pink;
+    --lime-color: lime;
+    --indigo-color: indigo;
+    --teal-color: teal;
+    --maroon-color: maroon;
+    --olive-color: olive;
+    --navy-color: navy;
+    --turquoise-color: turquoise;
+    --violet-color: violet;
+    --yellowgreen-color: yellowgreen;
+    --coral-color: coral;
+    --salmon-color: salmon;
+    --gold-color: gold;
+    --silver-color: silver;
+    --crimson-color: crimson;
+    --plum-color: plum;
+    --lavender-color: lavender;
+    --beige-color: beige;
+    --khaki-color: khaki;
+    --ivory-color: ivory;
+    --azure-color: azure;
+    --linen-color: linen;
+    --snow-color: snow;
+
+    /* Arrière-plan */
+    --background-color: #000;
+    --background: none;
+
+    /* Texte */
+    --text-color: #fff;
+    --font-size: 20px;
+    --font-family: monospace;
+
+    /* Scrollbar */
+    --scrollbar-track: #1b1b1b;
+    --scrollbar-thumb: #555;
+    --scrollbar-cursor: move;
+
+    /* Input */
+    --input-background: #333;
+    --input-color: #fff;
+    --input-content: "§";
+}
+
+body {
+    background-color: var(--background-color);
+    font-size: var(--font-size);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    overflow: hidden;
+}
+
+* {
+    cursor: default;
+}
+
+#terminal {
+    background-color: transparent;
+    height: calc(100vh - 30px);
+    padding: 10px;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    margin-right: -1%;
+}
+
+#terminal:hover,
+#terminal *:hover {
+    cursor: text;
+}
+
+#terminal::-webkit-scrollbar {
+    width: 12px;
+}
+
+#terminal::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 10px;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 8px;
+    border: 2px solid var(--scrollbar-track);
+    transition: background-color 0.3s ease;
+}
+
+#terminal::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb);
+    cursor: var(--scrollbar-cursor);
+}
+
+input {
+    width: 100%;
+    border: none;
+    background: var(--input-background);
+    color: var(--input-color);
+    font-family: monospace;
+    outline: none;
+    font-size: 16px;
+}
+
+.input-container {
+    position: relative;
+}
+#input {
+    padding-left: 20px;
+}
+#input:hover {
+    cursor: text;
+}
+.input-container::before {
+    content: var(--input-content);
+    position: absolute;
+    left: 5px; 
+    top: 50%;
+    transform: translateY(-50%); 
+    color: gray; 
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Couleurs */
+.red { color: var(--red-color); }
+.green { color: var(--green-color); }
+.yellow { color: var(--yellow-color); }
+.blue { color: var(--blue-color); }
+.reset { color: inherit; }
+.purple { color: var(--purple-color); }
+.gray { color: var(--gray-color); }
+.black { color: var(--black-color); }
+.white { color: var(--white-color); }
+.cyan { color: var(--cyan-color); }
+.magenta { color: var(--magenta-color); }
+.brown { color: var(--brown-color); }
+.orange { color: var(--orange-color); }
+.pink { color: var(--pink-color); }
+.lime { color: var(--lime-color); }
+.indigo { color: var(--indigo-color); }
+.teal { color: var(--teal-color); }
+.maroon { color: var(--maroon-color); }
+.olive { color: var(--olive-color); }
+.navy { color: var(--navy-color); }
+.turquoise { color: var(--turquoise-color); }
+.violet { color: var(--violet-color); }
+.yellowgreen { color: var(--yellowgreen-color); }
+.coral { color: var(--coral-color); }
+.salmon { color: var(--salmon-color); }
+.gold { color: var(--gold-color); }
+.silver { color: var(--silver-color); }
+.crimson { color: var(--crimson-color); }
+.plum { color: var(--plum-color); }
+.lavender { color: var(--lavender-color); }
+.beige { color: var(--beige-color); }
+.khaki { color: var(--khaki-color); }
+.ivory { color: var(--ivory-color); }
+.azure { color: var(--azure-color); }
+.linen { color: var(--linen-color); }
+.snow { color: var(--snow-color); }
+strong { font-weight: bold; }
+.underline { text-decoration: underline; }
+.italic { font-style: italic; }
