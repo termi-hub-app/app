@@ -1,3 +1,8 @@
+const path = require('path');
+
+const I18N = require('../utils/i18n');
+const _locale = new I18N(path.join(__dirname, '..', 'locales'));
+
 module.exports = {
     COMMAND: "help",
     helpModalIgnore: true,
@@ -9,8 +14,8 @@ module.exports = {
         
         for (const file of cmdFiles) {
             const module = require(`./${file}`);
-            if (!module.helpModalIgnore) {
-                if (module.helpModal) logSys.log(`- ${module.helpModal.tags[0]} ${module.COMMAND}: ${module.helpModal.description}`);
+            if (!module.helpModalIgnore || (!module.helpModalIgnore && module.helpModal) || module.helpModal) {
+                if (module.helpModal) logSys.log(`- ${module.helpModal.tags ? "["+module.helpModal.tags.join('-')+"] " : ""}${module.COMMAND}: ${module.helpModal.description}`);
                 else logSys.log(`- ${module.COMMAND}`);
             }
             

@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
-const { shell } = require('electron');
-const formatText = require('./utils/HTMLFormater.js');
-const _APP = require('./_APPINFO.js');
+const { shell, ipcRenderer } = require('electron');
+const formatText = require('../utils/HTMLFormater.js');
+const _APP = require('../_APPINFO.js');
 
 class TerminalManager {
     constructor() {
@@ -17,8 +17,7 @@ class TerminalManager {
         this.lastCommand = null;
         this.commandInProgress = false;
         
-        const configDir = process.env.APPDATA || path.join(process.env.HOME, '.config');
-        this.themePath = path.join(__dirname, 'STORAGE', 'themes');
+        this.themePath = path.join(__dirname, '..', 'STORAGE', 'themes');
         
         this.logSystem = {
             clear: () => this.terminal.innerHTML = '',
@@ -33,26 +32,47 @@ class TerminalManager {
 
     write(color, prefix, message) {
         if (!this.terminal) return;
-        this.terminal.innerHTML += formatText(`\n<${color}>[${prefix}] ${message}</${color}>`);
+        this.terminal.innerHTML += formatText(`\n%%%${color}%%%[${prefix}] ${message}%%%!${color}%%%`);
         this.scrollToBottom();
     }
 
-    init() {
+    async init() {
         if (this.isInitialized) return;
         
+        document.querySelectorAll('*').forEach((value) => {
+            value.classList.add('g4Dd0c04QDreDds32q5d0s2sd1cdsf3zegbcd');
+        });
+
         this.terminal = document.getElementById('terminal');
         this.input = document.getElementById('input');
         
         if (!this.terminal || !this.input) return;
+
+        await new Promise(async (resolve, reject) => {
+            try {
+                await this.setupEventListeners();
+                await this.setupThemes();
+                 resolve();
+            } catch (error) {
+                console.error;
+                 reject(error);
+            }
+        });
         
-        this.setupThemes();
-        this.setupEventListeners();
-        this.showWelcome();
+        document.getElementsByClassName('loader-container').item(0).remove();
+        this.logSystem.clear();
+
+        await this.showWelcome();
+
+        document.querySelectorAll('*').forEach((value) => {
+            value.classList.remove('g4Dd0c04QDreDds32q5d0s2sd1cdsf3zegbcd');
+        });
+        this.input.focus();
         
         this.isInitialized = true;
     }
 
-    setupEventListeners() {
+    async setupEventListeners() {
         this.input.addEventListener('keydown', this.handleInput.bind(this));
         
         // Create tooltip element
@@ -61,16 +81,45 @@ class TerminalManager {
         tooltip.textContent = 'CTRL+Click to open the link';
         document.body.appendChild(tooltip);
         
+        let tooltipTimer;
+        let isTooltipVisible = false;
+
         // Handle URL interactions
         this.terminal.addEventListener('mousemove', (e) => {
             const link = e.target.closest('.terminal-link');
             if (link && !e.ctrlKey) {
+                clearTimeout(tooltipTimer);
+                
+                const rect = link.getBoundingClientRect();
                 tooltip.style.display = 'block';
-                tooltip.style.left = (e.clientX + 15) + 'px';
-                tooltip.style.top = (e.clientY + 15) + 'px';
-            } else {
-                tooltip.style.display = 'none';
+                tooltip.classList.remove('fade-out');
+                
+                // Calculate position
+                let x = e.clientX + 15;
+                let y = e.clientY + 15;
+                
+                // Adjust if tooltip would go off screen
+                if (x + tooltip.offsetWidth > window.innerWidth) {
+                    x = window.innerWidth - tooltip.offsetWidth - 10;
+                }
+                if (y + tooltip.offsetHeight > window.innerHeight) {
+                    y = window.innerHeight - tooltip.offsetHeight - 10;
+                }
+                
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+                
+                // Set timer to hide tooltip after 5 seconds of no movement
+                tooltipTimer = setTimeout(() => {
+                    tooltip.classList.add('fade-out');
+                }, 5000);
+                
+                isTooltipVisible = true;
+            } else if (isTooltipVisible) {
+                tooltip.classList.add('fade-out');
+                isTooltipVisible = false;
             }
+
         });
 
         this.terminal.addEventListener('mouseleave', () => {
@@ -137,11 +186,11 @@ class TerminalManager {
         };
 
         try {
-            const cmdFiles = fs.readdirSync(path.join(__dirname, 'commands'))
+            const cmdFiles = fs.readdirSync(path.join(__dirname, '..', 'commands'))
                 .filter(file => file.endsWith('.js'));
             
             for (const file of cmdFiles) {
-                const module = require(`./commands/${file}`);
+                const module = require(`../commands/${file}`);
                 if (module.COMMAND === cmd) {
                     module.execute(client, this.logSystem, this.input, this.terminal, formatText);
                     return;
@@ -154,11 +203,11 @@ class TerminalManager {
         }
     }
 
-    showWelcome() {
+    async showWelcome() {
         if (this.welcomeShown) return;
 
         this.terminal.innerHTML += formatText(
-            `\n<bold>Welcome to <underline>TermiHub <italic>${_APP.version.important}</italic></underline></bold>`
+            `\n%%%bold%%%Welcome to %%%underline%%%TermiHub %%%italic%%%${_APP.version.important}%%%!italic%%%%%%!underline%%%%%%!bold%%%`
         );
         this.welcomeShown = true;
     }
@@ -171,7 +220,7 @@ class TerminalManager {
         this.terminal.scrollTop = this.terminal.scrollHeight;
     }
 
-    setupThemes() {
+    async setupThemes() {
         const defaultThemes = [
             {
                 name: "default",
@@ -214,7 +263,7 @@ class TerminalManager {
             
             // First load default themes
             defaultThemes.forEach(theme => {
-                const themeFile = path.join(this.themePath, `${theme.name}.json`);
+                const themeFile = path.join(this.themePath,  `${theme.name}.json`);
                 this.themes[theme.name] = theme.properties;
                 
                 // Save default theme if it doesn't exist

@@ -1,0 +1,11 @@
+[general]
+update_channel="all"
+startup_check=true
+[interface]
+theme="default"
+language=["en","US"]
+[history]
+max_history=200
+save_history=true
+[terminal]
+log_cmds=true

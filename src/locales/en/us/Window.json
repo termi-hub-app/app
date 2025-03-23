@@ -1,0 +1,31 @@
+{
+    "window_menu": {
+        "app": [
+            "App",
+            {
+                "settings": "Settings",
+                "quit": "Quit",
+                "reload": "Reload"
+            }
+        ],
+        "infos": [
+            "Informations",
+            {
+                "site": "Website",
+                "discord": "Discord",
+                "about": "About",
+                "github": "GitHub"
+            }
+        ],
+        "theme": [
+            "Theme",
+            {
+                "import": "Import a theme configuration",
+                "export": "Export the theme"
+            }
+        ]
+    },
+    "window_title": "TermiHub",
+
+    "tooltip_link": "CTRL+Click to open the link"
+}

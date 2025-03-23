@@ -1,0 +1,43 @@
+.settings-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.settings-section {
+    background: var(--input-background);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.settings-section h2 {
+    margin: 0 0 15px 0;
+    color: var(--text-color);
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+.setting-item label {
+    color: var(--text-color);
+}
+
+.setting-item select,
+.setting-item button {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--scrollbar-thumb);
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.setting-item button:hover {
+    background: var(--scrollbar-thumb);
+    cursor: pointer;
+}

@@ -1,39 +1,177 @@
-const { app, BrowserWindow, dialog, Menu, shell } = require('electron'); 
+const { app, BrowserWindow, dialog, Menu, shell, ipcMain } = require('electron'); 
 const fs = require('fs'); 
 const https = require('https');
 const os = require("os");
 const path = require("path");
 
-const { Client, register } = require('discord-rpc');
+const _APPINFO = require('./_APPINFO');
 
-let mainWindow; 
+let mainWindow;
+let SettingsWindow;
 let themes = {}; 
 const themeInstallPath = path.join(__dirname, 'themeinstall.json'); 
 
 function createWindow() {
     mainWindow = new BrowserWindow({ 
-        width: 600,
-        height: 475,
+        width: 750,
+        height: 550,
         icon: path.join(__dirname, 'logo.png'),
+        frame: false,
+        center: true,
+        transparent: false,
         webPreferences: {
             nodeIntegration: true, 
             contextIsolation: false,
+            sandbox: false,
+            devTools: true,
+            disableHtmlFullscreenWindowResize: true
         },
-        //autoHideMenuBar: true,
     });
 
-    mainWindow.loadFile('index.html');
+    ipcMain.on('window-minimize-MAIN', () => {
+        mainWindow.minimize();
+    });
+
+    ipcMain.on('window-maximize-MAIN', () => {
+        if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+        } else {
+            mainWindow.maximize();
+        }
+    });
+
+    ipcMain.on('window-close-MAIN', () => {
+        if (SettingsWindow) {
+            SettingsWindow.close();
+        }
+        SettingsWindow ? setTimeout(() => { app.quit(); }, 200) : app.quit();
+    });
+
+    mainWindow.loadFile(path.join(__dirname, 'window', 'index.html'));
+    
+    ipcMain.on('show-settings-dialog', () => {
+            if (SettingsWindow) {
+                closeSettings();
+                openSettings();
+            }
+
+            openSettings();
+        });
+
+        ipcMain.on('open-website', () => {
+            shell.openExternal(_APPINFO.website);
+        });
+        ipcMain.on('open-discord', () => {
+            shell.openExternal(_APPINFO.discord);
+        });
+        ipcMain.on('show-about-dialog', () => {
+            dialog.showMessageBox(
+                mainWindow,
+                {
+                    type: 'info',
+                    textWidth: 10,
+
+                    title: "About TermiHub",
+                    detail: `Version: ${_APPINFO.version.full}`,
+                    message: `Website:${_APP.website}\nGitHub: ${_APP.github}\nAuthor(s): ${_APP.authors}\nLicense: ${_APP.license[1]}`,
+
+                    buttons: ['Close']
+                }
+            );
+        });
+
+        ipcMain.on('app-quit', () => {
+            app.quit();
+        });
+        ipcMain.on('app-reload', () => {
+            mainWindow.reload();
+            if (SettingsWindow || SettingsWindow !== undefined) SettingsWindow.reload();
+        });
+
+        ipcMain.on('import-theme', async () => {
+            const result = await dialog.showOpenDialog(mainWindow, {
+                properties: ['openFile'],
+                filters: [
+                    { name: 'TermiHub Theme File', extensions: ['termtheme'] },
+                    { name: 'JSON Theme File', extensions: ['json'] },
+                ],
+            });
+
+            if (!result.canceled && result.filePaths.length > 0) {
+                const filePath = result.filePaths[0];
+                importThemes(filePath);
+            }
+        });
+        ipcMain.on('export-theme', async () => {
+            const result = await dialog.showSaveDialog(mainWindow, {
+                title: 'Export themes',
+                defaultPath: path.join(app.getPath('home'), 'termitheme.termtheme'),
+                filters: [
+                    { name: 'TermiHub Theme File', extensions: ['termtheme'] },
+                    { name: 'JSON Theme File', extensions: ['json'] },
+                ],
+            });
+
+            if (!result.canceled && result.filePath) {
+                exportThemes(result.filePath);
+            }
+        });
+
+    /*// */   mainWindow.webContents.openDevTools()//DEBUGMODE ONLY
 
     checkForUpdates();
     loadRPC();
+}
+
+function openSettings() {
+    SettingsWindow = new BrowserWindow({
+        width: 475,
+        height: 775,
+        icon: path.join(__dirname, 'logo.png'),
+        frame: false,
+        center: true,
+        transparent: false,
+        webPreferences: {
+            nodeIntegration: true, 
+            contextIsolation: false,
+            sandbox: false,
+            devTools: true,
+            disableHtmlFullscreenWindowResize: true
+        },
+        resizable: false,
+        //movable: false      c pas sur linux, donc c injuste
+    });
+
+    ipcMain.on('window-minimize-SETTING', () => {
+        SettingsWindow.minimize();
+    });
+
+    ipcMain.on('window-maximize-SETTING', () => {
+        if (SettingsWindow.isMaximized()) {
+            SettingsWindow.unmaximize();
+        } else {
+            SettingsWindow.maximize();
+        }
+    });
+
+    ipcMain.on('window-close-SETTING', () => {
+        closeSettings();
+    });
+
+    SettingsWindow.loadFile(path.join(__dirname, 'window', 'settings', 'index.html'));
+}
+
+function closeSettings() {
+    SettingsWindow.close();
+    SettingsWindow = undefined;
 }
 
 const currentVersion = '1.1.0-b1';
 const versionUrl = 'https://termi-hub-app.github.io/assets/app-database/version.json';
 
 app.whenReady().then(() => {
-    loadThemes(); 
     createWindow();
+    loadThemes();
 });
 
 app.on('window-all-closed', () => {
@@ -78,7 +216,7 @@ function checkForUpdates() {
                 console.error('Erreur lors de l\'analyse des données de version:', error);
                 dialog.showMessageBox(mainWindow, {
                     type: 'error',
-                    title: 'Erreur',
+                    title: 'Error',
                     message: `An error has occured, there possible solutions\n1. Verify your internet connection\n2. Reinstall TermiHub`,
                     detail: 'If the error occurs again, please contact our developers (@liveweeeb13 or @befaci.coolate on Discord)',
                     noLink: true
@@ -89,104 +227,6 @@ function checkForUpdates() {
         console.error('Erreur lors de la vérification de la version:', err);
     });
 }
-
-const menuTemplate = [
-    {
-        label: 'App',
-        submenu: [
-            {
-                label: 'Settings',
-                click: () => {
-                    dialog.showMessageBox(mainWindow, {
-                        type: 'info',
-                        title: 'Settings',
-                        message: 'Settings are not available yet.',
-                    });
-                }
-            },
-            {
-                label: 'Quit',
-                click: () => {
-                    app.quit();
-                },
-            },
-            {
-                label: 'Reload',
-                click: () => {
-                    mainWindow.reload();
-                }
-            }
-        ],
-    },
-    {
-        label: 'Informations',
-        submenu: [
-            {
-                label: 'Website',
-                click: () => {
-                    shell.openExternal('https://termi-hub-app.github.io/');
-                },
-            },
-            {
-                label: 'Discord',
-                click: () => {
-                    shell.openExternal('https://discord.gg/4baaMs9Mnt');
-                },
-            },
-            {
-                label: 'About',
-                click: () => {
-                    dialog.showMessageBox(mainWindow, {
-                        type: 'info',
-                        title: 'About TermiHub',
-                        message: 'TermiHub is a terminal emulator developed by the TermiHub team.\n\nVersion: 1.0.0-b4',    //     pas mtn la license uwuw...     \n\nThis software is under the MIT license.
-                    });
-                },
-            },
-        ],
-    },
-    {
-        label: 'Theme',
-        submenu: [
-            {
-                label: 'Import a theme configuration',
-                click: async () => {
-                    const result = await dialog.showOpenDialog(mainWindow, {
-                        properties: ['openFile'],
-                        filters: [
-                            { name: 'TermiHub Theme File', extensions: ['termtheme'] },
-                            { name: 'JSON Theme File', extensions: ['json'] },
-                        ],
-                    });
-
-                    if (!result.canceled && result.filePaths.length > 0) {
-                        const filePath = result.filePaths[0];
-                        importThemes(filePath);
-                    }
-                },
-            },
-            {
-                label: 'Export a theme',
-                click: async () => {
-                    const result = await dialog.showSaveDialog(mainWindow, {
-                        title: 'Export themes',
-                        defaultPath: path.join(app.getPath('home'), 'termitheme.termtheme'),
-                        filters: [
-                            { name: 'TermiHub Theme File', extensions: ['termtheme'] },
-                            { name: 'JSON Theme File', extensions: ['json'] },
-                        ],
-                    });
-
-                    if (!result.canceled && result.filePath) {
-                        exportThemes(result.filePath);
-                    }
-                },
-            }
-        ],
-    },
-];
-const menu = Menu.buildFromTemplate(menuTemplate);
-Menu.setApplicationMenu(menu);
 
 function importThemes(filePath) {
     try {
@@ -261,19 +301,30 @@ function exportThemes() {
     }
 }
 
-function loadRPC() {
-    const clientId = "1301104881687334922";
+const RPCManager = require('./utils/DiscordRPC');
+let rpcManager = null;
 
-    register(clientId);
+async function loadRPC() {
+    try {
+        rpcManager = new RPCManager();
+        await rpcManager.initialize(_APPINFO.version.full);
 
-    const rpc = new Client({ transport: 'ipc' });
-    rpc.on('ready', () => {
-        rpc.setActivity({
-            details: 'v1.0.1-b1',
-            state: 'Using the terminal',
-            largeImageKey: 'logo2',
-            largeImageText: 'TermiHub\'s logo',
-            instance: false
+        mainWindow.on('focus', () => {
+            if (rpcManager) rpcManager.updatePresence(true, _APPINFO.version.full);
         });
-    });
+        mainWindow.on('blur', () => {
+            if (rpcManager) rpcManager.updatePresence(false, _APPINFO.version.full);
+        });
+
+    } catch (error) {
+        console.error('Failed to initialize Discord RPC:', error);
+        rpcManager = null;
+    }
 }
+
+app.on('before-quit', () => {
+    if (rpcManager) {
+        rpcManager.destroy();
+        rpcManager = null;
+    }
+});

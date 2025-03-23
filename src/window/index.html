@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <identifier id="WINTYPEIDENTIFIER_researchString">MAIN</identifier>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="renderer.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/Window.css">
+
+    <script src="_windowManager.js"></script>
+
+    <title>Loading TermiHub v{versionfull}</title>
+</head>
+<div class="titlebar">
+    <div class="titlebar-left">
+        <div class="titlebar-title">TermiHub</div>
+        <div class="titlebar-toolbar"></div>
+    </div>
+    <div class="titlebar-controls">
+        <button id="minimize-button" class="titlebar-button minimize">─</button>
+        <button id="maximize-button" class="titlebar-button maximize">□</button>
+        <button id="close-button" class="titlebar-button close">×</button>
+    </div>
+</div>
+<body>
+    <div id="terminal">
+        <div class="loader-container">
+            <div id="loader-icon"></div>
+            <h2 id="loader-text">Loading...</h2>
+        </div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="input" autofocus />
+    </div>
+</body>
+</html>

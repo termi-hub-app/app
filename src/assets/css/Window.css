@@ -1,0 +1,103 @@
+.titlebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 32px;
+    background: #1a1a1a;
+    -webkit-app-region: drag;
+    padding: 0 8px;
+}
+
+.titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.titlebar-title {
+    color: #fff;
+    font-size: 14px;
+}
+
+.titlebar-toolbar {
+    display: flex;
+    gap: 4px;
+    -webkit-app-region: no-drag;
+}
+
+.toolbar-button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toolbar-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.titlebar-controls {
+    -webkit-app-region: no-drag;
+    display: flex;
+    gap: 8px;
+}
+
+.titlebar-toolbar {
+    display: flex;
+    gap: 4px;
+    -webkit-app-region: no-drag;
+    margin-left: 16px;
+}
+
+.toolbar-button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.toolbar-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px 0;
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.toolbar-menu-item {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.toolbar-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
